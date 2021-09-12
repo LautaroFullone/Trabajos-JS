@@ -1,0 +1,44 @@
+
+.contenedor{
+    display: grid;
+    margin:20px auto;
+    gap: 20px;
+    grid-template-columns: repeat(2, minmax(300px, 600px));
+    justify-items: center;
+    grid-template-areas: "lista-global  lista-propia";
+}
+
+.contenedor .lista-global{
+    grid-area: lista-global;
+    display: grid;
+
+    grid-template-columns: repeat(2, 300px);
+    grid-auto-rows: minmax(20px,auto);
+    grid-template-areas: "titulo titulo"
+                          "items1  items2";
+}
+
+.contenedor .lista-global .titulo {
+    grid-area: titulo;
+    text-align: center;
+}
+
+.contenedor .lista-global .items1 {
+    grid-area: items1;
+    grid-auto-rows: 30px;
+    
+}
+.contenedor .lista-global .items2 {
+    grid-area: items2;
+
+}
+
+.contenedor .lista-global .botones {
+    grid-area: botones;
+
+}
+.contenedor .lista-propia {
+    grid-area: lista-propia;
+    text-align: center;
+}
+

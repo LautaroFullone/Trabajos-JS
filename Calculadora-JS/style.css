@@ -1,0 +1,64 @@
+body{
+    padding: 0;
+    margin: 0;
+    background-image: linear-gradient(to right top, #ff0000, #ff3100, #ff4800, #ff5900, #ff6800, #ff7704, #fe840e, #fe9119, #fda12a, #fcb03b, #fbbe4d, #fbcc5f);
+}
+
+.calculator-grid{
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    min-height: 100vh;
+    grid-template-columns: repeat(5, 100px);
+    grid-template-rows: minmax(120px, auto) repeat(5,100px);
+
+}
+
+/*  --> APLICA ESTAS PROPIEDADES A TODOS LOS BOTONES DENTRO DE LA GRILLA */
+.calculator-grid >button{
+    cursor: pointer;
+    font-size: 2rem;
+    border: 1px solid white;
+    outline: none;
+    background-color: rgba(226, 158, 48, 0.335);
+    border-radius: 5px;
+    margin: 3px;
+}
+
+.calculator-grid>button.data-operator, button.data-delet,
+button.data-clear,button.data-equal {
+    background-color: rgba(229, 255, 0, 0.5);
+}
+
+
+.calculator-grid >button:hover{
+    background-color: #ff6800;
+}
+
+.calculator-grid .data-delet{
+    grid-column: 5 / -1;
+    grid-row: 2/ 6;
+}
+
+.output{
+    grid-column: 1 /-1;
+    background-color: #ff5900;
+    border-radius: 5px;
+    border: 1px solid white;
+    margin: 2px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    flex-direction: column;
+    padding: 10px;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.output .display{
+    color: black;
+    font-size: 1.85rem;
+    text-align: right;
+    border: 0;
+    background-color:transparent;
+}

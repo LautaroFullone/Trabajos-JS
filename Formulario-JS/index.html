@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario-JS</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <form id=formulario>
+        <div class="row g-3">
+            <div class="col-3">
+                <label for="nombre" class="form-label">NOMBRE</label>
+                <input class="form-control" id="nombre">
+            </div>
+            <div class="col-md-3">
+                <label for="apellido" class="form-label">APELLIDO</label>
+                <input class="form-control" id="apellido">
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-6">
+                <label for="email" class="form-label">EMAIL</label>
+                <input class="form-control" id="email">
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-3">
+                <label for="contrasenia" class="form-label">CONTRASEÑA</label>
+                <input type="password" class="form-control" id="contrasenia" >
+            </div>
+            <div class="col-3">
+                <label for="edad" class="form-label">EDAD</label>
+                <input class="form-control" id="edad">
+            </div>
+        </div>
+            
+        <button type="submit" class="btn btn-outline-success">Success</button>
+    </form>
+
+
+
+    <script src="main.js"></script>
+</body>
+
+</html>
