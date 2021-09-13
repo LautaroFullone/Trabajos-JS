@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tp2</title>
+
+    <style>
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!--PRIMER EJERCICIO-->
+    <p id="myId"></p>
+
+    <!--SEGUNDO EJERCICIO-->
+    <p class="test"></p>
+    <p class="test"></p>
+
+    <!--TERCER EJERCICIO-->
+    <input type="button" value="Insert row" onclick='insertRow()'>
+    <input type="button" value="Delete row" onclick='deleteRow()'>
+
+    <br><br>
+
+    <table style="width: 100%;" class="myTable">
+        <tr>
+            <th>Header 1</th>
+            <th>Header 2</th>
+        </tr>        
+    </table>
+
+    <!--CUARTO EJERCICIO-->
+    <input type="button" value="Highlight words" onclick="highlight()">
+    <br><br>
+    <p>Lorem <span class="myClass">ipsum</span> dolor sit 
+       <span class="myClass">amet</span> consectetur adipisicing 
+       elit. Veritatis hic nobis ratione ame <span class="myClass">expedita</span> 
+       consequuntur eum impedit. Quaerat, dolorum magni beatae dolore 
+       est officiis quos magnam <span class="myClass">possimus</span> vel sed eos eligendi.</p>
+
+
+    <script src="main.js"></script>
+</body>
+
+</html>

@@ -23,7 +23,7 @@ function agregarDeseado(item){
         item.setAttribute("style", "color: red") ;     
         var li = document.createElement('li')
         li.appendChild(document.createTextNode(item.innerText));
-        li.setAttribute("id", item.id+"-deseado");
+        li.setAttribute("id", item.id+"-deseado");  //modifico el id para que no este duplicado en ambas listas y poder manipularlos por separado
         li.setAttribute("class", "list-group-item");
         li.setAttribute("style", "color: green");
         li.setAttribute("onClick", "eliminarDeseado(id)")
