@@ -40,15 +40,23 @@ window.onload = function () {
     const DOMcarrito = document.querySelector('#carrito');
     const DOMtotal = document.querySelector('#total');
     const DOMbotonVaciar = document.querySelector('#boton-vaciar');
+    const DOMbotonComprar = document.querySelector('#boton-comprar');
+
 
     var carrito = [];
     var total = 0;
 
      // Eventos
-     DOMbotonVaciar.addEventListener('click', vaciarCarrito);
+    DOMbotonVaciar.addEventListener('click', vaciarCarrito);
+    
+    DOMbotonComprar.addEventListener('click', ()=>{
+        alert("Gracias vuelva prontos :D")
+        location.reload();  //recargar pagina
+    });
+
 
      // Inicio
-     renderizarProductos();
+    renderizarProductos();
 
     function renderizarProductos() {
         productos.forEach((zapatilla) => {
@@ -68,7 +76,8 @@ window.onload = function () {
 
             var miNodoPrecio = document.createElement('p');
             miNodoPrecio.classList.add('card-text');
-            miNodoPrecio.textContent = zapatilla.precio + '$';
+            miNodoPrecio.setAttribute("id", "precio"+zapatilla.id);  //despues lo uso para calcular el total del carrito
+            miNodoPrecio.textContent = '$'+ zapatilla.precio;
 
             var miNodoBoton = document.createElement('button');
             miNodoBoton.setAttribute('class', 'btn btn-outline-secondary');
@@ -95,64 +104,73 @@ window.onload = function () {
     
     function renderizarCarrito() {
         DOMcarrito.textContent = '';
-        const carritoSinDuplicados = new Set(carrito);
-        // Generamos los Nodos a partir de carrito
-        carritoSinDuplicados.forEach((item) => {
-            // Obtenemos el item que necesitamos de la variable base de datos
-            const miItem = productos.filter((itemBaseDatos) => {
-                // ¿Coincide las id? Solo puede existir un caso
-                return itemBaseDatos.id === parseInt(item);
+
+        const carritoSinDuplicados = new Set(carrito);  //automaticamentre elimina los duplicado
+        
+        //console.log(carritoSinDuplicados);
+        //console.log(productos);
+        carritoSinDuplicados.forEach((itemIdCarrito) => {  //creo una fila nueva por producto distinto
+            
+            const miItem = productos.filter((zapatilla) => {  
+                // Guardo en un array el producto de la 'base de dato' que coincide con el id de producto de mi carrito
+                return zapatilla.id === parseInt(itemIdCarrito);
             });
-            // Cuenta el número de veces que se repite el producto
-            const numeroUnidadesItem = carrito.reduce((total, itemId) => {
-                // ¿Coincide las id? Incremento el contador, en caso contrario no mantengo
-                return itemId === item ? total += 1 : total;
-            }, 0);
-            // Creamos el nodo del item del carrito
+           
+            // Cuenta el número de veces que se repite el producto en el carrito
+            const numeroUnidadesItem = carrito.reduce((acumulador, itemId) => {
+                //si el id del producto en carrito coincide con la bd  -> le suma 1 al contador, sino lo deja como estaba
+                return itemId === itemIdCarrito ? acumulador += 1 : acumulador; // ¿Coincide las id? Incremento el contador, en caso contrario lo mantengo
+            }, 0); //acumulador es el contador definido por el metodo que se inicializa con el valor de 0 (como indica el ultimo parametro)
+           
             const miNodo = document.createElement('li');
             miNodo.classList.add('list-group-item', 'text-right', 'mx-2');
-            miNodo.textContent = `${numeroUnidadesItem} x ${miItem[0].nombre} - ${miItem[0].precio}€`;
+            miNodo.textContent = numeroUnidadesItem+' x '+miItem[0].nombre+' - $'+miItem[0].precio;
+
             // Boton de borrar
             const miBoton = document.createElement('button');
-            miBoton.classList.add('btn', 'btn-danger', 'mx-5');
+            miBoton.classList.add('btn', 'btn-outline-danger', 'mx-3');
             miBoton.textContent = 'X';
             miBoton.style.marginLeft = '1rem';
-            miBoton.dataset.item = item;
+            miBoton.dataset.productoId = itemIdCarrito; //<button data-producto-id="2">Hola</button>  es una referencia para acceder dsp
             miBoton.addEventListener('click', borrarItemCarrito);
-            // Mezclamos nodos
+
             miNodo.appendChild(miBoton);
             DOMcarrito.appendChild(miNodo);
         });
     }
 
-        /**
-         * Evento para borrar un elemento del carrito
-         */
-    function borrarItemCarrito(evento) {
-        // Obtenemos el producto ID que hay en el boton pulsado
-        const id = evento.target.dataset.item;
-        // Borramos todos los productos
-        carrito = carrito.filter((carritoId) => {
-            return carritoId !== id;
+      
+    function borrarItemCarrito(evento) { //evento.target hace referencia al nodo que envio el evento
+        console.log(evento.target); //en este caso, event.target= <button onCLick="borrarItemCarrito" data-producto-id="1">X</button>
+        const id = evento.target.dataset.productoId; //trae el id del producto
+        var isEliminadoElPrimero = false;
+        
+        // Borramos la primer referencia a ese producto
+        carrito.forEach((item) => {
+            if(item == id && isEliminadoElPrimero == false){
+                carrito.splice( carrito.indexOf(item), 1);
+                isEliminadoElPrimero = true;
+            }
         });
-        // volvemos a renderizar
+        
         renderizarCarrito();
-        // Calculamos de nuevo el precio
         calcularTotal();
     }
 
     function calcularTotal() {
-        console.log(carrito);
+        //console.log(carrito);
         total = 0;
-        carrito.forEach((item) => {// De cada elemento del carrito obtenemos su precio
+        carrito.forEach((itemId) => {// De cada elemento del carrito obtenemos su precio
             
-            const miItem = productos.filter((zapatilla) => {  //crea un nuevo array con los elementos que cumplen la funcion
-                return zapatilla.id === parseInt(item);
+            var precio = document.getElementById("precio"+itemId).innerText; //$150
+            precio = parseFloat(precio.substr(1)); //150
+            
+            total += precio;
+            /*const item = productos.filter((producto) => {  //crea un nuevo array con los elementos que cumplen la funcion
+                return producto.id === parseInt(itemId);
             });
-
-            console.log(miItem);
-
-            total = total + miItem[0].precio;
+            console.log(item);
+            total = total + item[0].precio;*/ 
         });
         DOMtotal.textContent = total;
     }
@@ -161,9 +179,7 @@ window.onload = function () {
      * Varia el carrito y vuelve a dibujarlo
      */
     function vaciarCarrito() {
-        // Limpiamos los productos guardados
         carrito = [];
-        // Renderizamos los cambios
         renderizarCarrito();
         calcularTotal();
     }
