@@ -1,4 +1,4 @@
-window.onload = function () {
+//window.onload = function () {
         
     const productos = [{
         id: 1,
@@ -185,6 +185,6 @@ window.onload = function () {
     }
 
 
-}
+//}
         
     
