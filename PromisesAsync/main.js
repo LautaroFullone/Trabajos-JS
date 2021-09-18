@@ -22,26 +22,45 @@ var personasJSON = [];
 var personasObject = [];
 var totalPersonas = 0;
 
-const SIZE = 10;
+const SIZE = 200;
 var actualPage = 0;
 
-window.onload = () =>{
+window.onload = async () =>{
 
     getAllPersonas(3);
 
     //totalPersonas = await getTotalPersonas();  //await siempre debe ser sobre el return de una promise SI O SI
 
-    getTotalPersonas()
+    /*getTotalPersonas()
         .then((response) => {
+
             totalPersonas = response;
-            console.log("totalPersonas-> " + totalPersonas);
+
+            console.log("totalPersonas-> " + totalPersonas); 
+            
+            getPersonasPaginado(actualPage, SIZE);
         })
         .catch((response) => {
             console.log(response);
         })
-    
+    */
+        console.log("Antes del get Total");
+        totalPersonas = await getTotalPersonas();
+        console.log("Despues del get Total: Cant " + totalPersonas);
+        
+        console.log("Antes del get Paginado");
+        var promise2 = await getPersonasPaginadoAsyc(actualPage, SIZE);
 
-    getPersonasPaginado(actualPage, SIZE);
+        console.log(promise2);
+        var listado= new Array();
+        promise2.forEach(p => {
+            listado.push(new Persona(p.userId, p.firstName, p.lastName, p.email, p.gender, p.lastConnectedAddress));
+        })
+        console.log("Despues del get Paginado");
+        renderizarTabla(tablaPersonasPaginadas, listado);
+        console.log("Antes del renderizado");
+        
+   
 
 };
 
@@ -52,18 +71,21 @@ botonPrevious.addEventListener('click', function () {
     else{
          clearTable(tablaPersonasPaginadas);
         actualPage--;
-        getPersonasPaginado(actualPage * SIZE + 1, (actualPage * SIZE) + SIZE);
+        var from = actualPage * SIZE;
+
+        getPersonasPaginado(from + 1, from + SIZE);
     }
 })
 
 botonNext.addEventListener('click', function () {
     
-    if ( ((actualPage * SIZE) + SIZE) > 500 )
+    if (actualPage + 1 >= totalPersonas / SIZE) 
         alert("No hay tanto para mostrar");
     else{
         clearTable(tablaPersonasPaginadas);
         actualPage++;
-        getPersonasPaginado(actualPage * SIZE + 1, (actualPage * SIZE) + SIZE);
+        var from = actualPage * SIZE;
+        getPersonasPaginado(from+1,from+SIZE);
     }
 })
 
@@ -79,11 +101,17 @@ function getPersonasPaginado(from, to) {
                 personasObject.push(new Persona(p.userId, p.firstName, p.lastName, p.email, p.gender, p.lastConnectedAddress));
             })
 
-            renderizarTabla(tablaPersonasPaginadas);
+            renderizarTabla(tablaPersonasPaginadas, personasObject);
         })
         .catch((reason) => {
             console.log(reason);
         })
+}
+
+function getPersonasPaginadoAsyc(from, to) {
+    var url = apiUrl + '/' + from + '/' + to;
+
+    return callApiPersons(url);
 }
 
 
@@ -123,15 +151,8 @@ function getTotalPersonas() {
         })*/ 
 }
 
-
-
-
-
-
-
-
-function renderizarTabla(tabla) {
-    personasObject.forEach(function (persona) {
+function renderizarTabla(tabla, listadoPersonas) {
+    listadoPersonas.forEach(function (persona) {
 
         var fila = tabla.insertRow(-1);
         var celda = fila.insertCell(-1);
@@ -167,7 +188,7 @@ function getAllPersonas(cant) {
                 personasObject.push(new Persona(p.userId, p.firstName, p.lastName, p.email, p.gender, p.lastConnectedAddress));
             })
 
-            renderizarTabla(tablaPersonas);
+            renderizarTabla(tablaPersonas, personasObject);
         })
         .catch((reason) => {
             console.log(reason);
