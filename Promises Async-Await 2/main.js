@@ -135,7 +135,7 @@ function callApiPOST(employeeJSON) {
         request.setRequestHeader("content-type", "application/json");
 
         //request.send("{\"employeeId\":0,\"companyId\":0,\"firstName\":\"string\",\"lastName\":\"string\",\"email\":\"string\"}");
-        request.send(employeeJSON.toString)
+        request.send(employeeJSON.toString())
 
         if (request.status == 201) {
             alert("Uploaded!");
