@@ -13,17 +13,49 @@
 </head>
 <body>
 
-    <table class="table" id='employees-table'>
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">NAME</th>
-                <th scope="col">LASTNAME</th>
-                <th scope="col">COMPANY</th>
-                <th scope="col">EMAIL</th>
-            </tr>
-        </thead>
-    </table>
+    <div class="mx-5 mt-5">
+        <div class="mb-5 col-6 offset-3">
+            <form id="formulario-empleado">
+                <div class="mb-3">
+                    <label for="firstName" class="form-label">Nombre</label>
+                    <input id='firstName' type="text" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">Apellido</label>
+                    <input id='lastName' type="text" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="companyId" class="form-label">Empresa</label>
+                    <input id='companyId' type="number" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input id='email' type="email" class="form-control">
+                </div>
+
+                <button type="submit" id="btn-add" class="btn btn-outline-primary" style="width: 100%;">AGREGAR</button>
+            </form>
+        </div>
+
+
+        <table class="table" id='employees-table'>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">NAME</th>
+                    <th scope="col">LASTNAME</th>
+                    <th scope="col">COMPANY</th>
+                    <th scope="col">EMAIL</th>
+                    <th scope="col">ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+               
+            </tbody>
+        </table>
+        
+    </div>
+    
 
 
     <script src="main.js"></script>

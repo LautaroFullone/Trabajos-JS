@@ -16,18 +16,27 @@ class Employee {
 }
 
 const apiUrl = 'https://utn-lubnan-api-2.herokuapp.com/api/';
+const urlEmployees = apiUrl + 'Employee';
+const urlCompanies = apiUrl + 'Company';
+
+const formulario = document.querySelector('#formulario-empleado')
 const employeesTable = document.querySelector('#employees-table');
-const pepe = new Employee(4, new Company(100, "Accenture"), "Pepe", "Roldan", "peperoldan@gmail.com");
+const pepe = new Employee(4, new Company(2, "Accenture"), "Juan", "Nares", "peperoldan@gmail.com");
+
+const CANT_REGISTROS = 2000;
 
 var employeesList = [];
 var companiesList = [];
 
 window.onload = function () {
-    getAllEmployeesWithCompany();
+    getAllEmployeesWithCompany();  
 
-    insertEmployee(pepe);
-   
 }
+
+formulario.addEventListener('submit', (event) => {
+    //event.preventDefault(); //para que muestre los logs
+    insertEmployee();
+})
 
 function callApiGET(url) {
     return new Promise((resolve, reject) => {
@@ -36,7 +45,7 @@ function callApiGET(url) {
         request.responseType = 'json'; //si no hay nada es texto
 
         request.onload = function () {
-            if (request.status = 200)
+            if (request.status == 200)
                 resolve(request.response);
             else
                 reject(Error("Los archivos no llegaron. Codigo error: " + request.statusText));
@@ -50,35 +59,81 @@ function callApiGET(url) {
     })
 };
 
-async function getAllEmployeesWithCompany() {
-    var urlEmployees = apiUrl + 'Employee';
-    var urlCompanies = apiUrl + 'Company';
+function callApiPOST(url, data=null) {
+    return new Promise((resolve, reject) => {
+        var request = new XMLHttpRequest();
+        request.open('POST', url);
+        
+        request.onload = function () {
+            if (request.status == 200 || request.status == 201) 
+                resolve(request.response);
+            else
+                reject(Error("Los archivos no se enviaron. Codigo error: " + request.status));
+        }
+        request.onerror = function () {
+            reject(Error("Upa! Algo salio mal con la api."))
+        }
 
-    employeesList = callApiGET(urlEmployees);
-    companiesList = callApiGET(urlCompanies);
+        request.setRequestHeader("Content-Type", "application/json");
+        request.send(JSON.stringify(data)).
+    
+    })
+};
 
-    employeesList = await employeesList;
-    companiesList = await companiesList;
+function callApiDELETE(url) {
+    return new Promise((resolve, reject) => {
+        var request = new XMLHttpRequest();
+        request.open('DELETE', url);
 
-    companiesList = mapearCompanies(companiesList);
-    employeesList = mapearEmployees(employeesList)
+        request.onload = function () {
+            if (request.status == 200 || request.status == 201)
+                resolve(request.response)
+            else
+                reject(Error("Los archivos no eliminaron. Codigo error: " + request.status));
+        }
+        request.onerror = function () {
+            reject(Error("Upa! Algo salio mal con la api."))
+        }
 
-    renderizeEmployees(employeesTable, employeesList, 200);
+        request.send();
+    })
+};
+
+
+async function insertEmployee() {
+    var companyId = document.getElementById('companyId').value
+    var firstName = document.getElementById('firstName').value
+    var lastName = document.getElementById('lastName').value
+    var email = document.getElementById('email').value
+
+    var jsonEmployee = {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        companyId: parseInt(companyId)
+    };
+
+    await callApiPOST(urlEmployees, jsonEmployee)
 }
 
-async function insertEmployee(employee) {
-    employee = convertToJSON(employee);
-    console.log(employee);
-    var promise = await callApiPOST(employee);
+async function getAllEmployeesWithCompany() {
 
-    var list = await callApiGET(apiUrl);
+    companiesList = []; employeesList=[];
+
+    var promiseCompanies = callApiGET(urlCompanies);
+    var promiseEmployees = callApiGET(urlEmployees);
     
-    console.log(list.find(e => e.name == "Pepe"));
+    companiesList = mapearCompanies(await promiseCompanies);
+    employeesList = mapearEmployees(await promiseEmployees)
 
+    renderizeEmployees(employeesTable, employeesList,1500);
 }
 
 function mapearCompanies(list) {
     var companiesListClass = [];
+    console.log("companiesList EN MAPEAR COMPANIES");
+
+    console.log(list);
 
     list.forEach((c) => {
         companiesListClass.push(new Company(c.companyId, c.name));
@@ -89,25 +144,30 @@ function mapearCompanies(list) {
 //must have mapped companies list before execute him
 function mapearEmployees(list) {
     employeesListClass = [];
+    console.log("companiesList EN MAPEAR EMPLEYEES");
 
     list.forEach((e) => {
         var employeeCompany = companiesList.find(company => company.id == e.companyId);
-        employeeCompany = (employeeCompany !== undefined) ? employeeCompany : -1;
+        employeeCompany = (employeeCompany !== undefined) ? employeeCompany : new Company(000, "Empresa Fantasma");
         employeesListClass.push(new Employee(e.employeeId, employeeCompany, e.firstName, e.lastName, e.email));
     })
 
     return employeesListClass;
 }
 
-function renderizeEmployees(table, employeeList, tableSize) {
-    var e = undefined;
+function renderizeEmployees(table, employeeList, cant) {
 
-    for (i = 0; i < tableSize; i++) {
+    var e = undefined;
+    employeeList.reverse();
+    
+    if(cant>employeeList.length) cant=employeeList.length-1;
+
+    for (i = 0; i <= cant; i++) {
         e = employeeList[i];
 
         var row = table.insertRow(-1);
         var cell = row.insertCell(-1);
-        cell.innerText = e.id;
+        cell.innerText =e.id;
 
         cell = row.insertCell(-1);
         cell.innerText = e.firstName;
@@ -120,32 +180,32 @@ function renderizeEmployees(table, employeeList, tableSize) {
 
         cell = row.insertCell(-1);
         cell.innerText = e.email;
+
+        cell = row.insertCell(-1);
+        var button = document.createElement('button');
+        button.setAttribute('class', 'btn btn-outline-danger');
+        button.textContent = 'Delete';
+        button.dataset.employee = e.id;
+        button.addEventListener('click', deleteEmployee);  //luego recibo el evento
+        cell.appendChild(button);
     }
+}
+
+function deleteEmployee(evento) {
+    console.log("Hello");
+    var idEmployee = evento.target.dataset.employee;
+    console.log(idEmployee)
+
+    callApiDELETE(urlEmployees + '/' + idEmployee)
+        .then(response => {
+           window.location.reload();
+        })
+        .catch((response) => {
+            console.log(response);
+        })
 
 }
 
-function callApiPOST(employeeJSON) {
-    var urlEmployees = apiUrl + 'Employee';
-
-    console.log(urlEmployees);
-    return new Promise((resolve, reject) => {
-        var request = new XMLHttpRequest();
-        request.open('POST', urlEmployees);
-
-        request.setRequestHeader("content-type", "application/json");
-
-        //request.send("{\"employeeId\":0,\"companyId\":0,\"firstName\":\"string\",\"lastName\":\"string\",\"email\":\"string\"}");
-        request.send(employeeJSON.toString())
-
-        if (request.status == 201) {
-            alert("Uploaded!");
-        } else {
-            console.log("status "+request.status);
-            console.log(request.responseText);
-            alert("Something went wrong!");
-        }
-    })
-};
 
 function convertToJSON(employee) {
     var json = {};
