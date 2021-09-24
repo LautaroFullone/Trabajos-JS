@@ -131,7 +131,6 @@ async function getAllEmployeesWithCompany() {
 
 function mapearCompanies(list) {
     var companiesListClass = [];
-    console.log("companiesList EN MAPEAR COMPANIES");
 
     console.log(list);
 
@@ -144,7 +143,6 @@ function mapearCompanies(list) {
 //must have mapped companies list before execute him
 function mapearEmployees(list) {
     employeesListClass = [];
-    console.log("companiesList EN MAPEAR EMPLEYEES");
 
     list.forEach((e) => {
         var employeeCompany = companiesList.find(company => company.id == e.companyId);
