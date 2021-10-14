@@ -1,3 +1,4 @@
+
 const parrafo = document.getElementById("myId");
 parrafo.innerText = "Hello Word";
 
@@ -10,6 +11,7 @@ spanes.forEach(span => {
   span.setAttribute("style", "font-weight: bolder");
   
 });
+
 
 var tabla = document.getElementsByClassName("myTable")[0];
 var contador = 0;
